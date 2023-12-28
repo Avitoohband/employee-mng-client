@@ -1,10 +1,14 @@
 import './App.css';
+import EmployeeTable from './component/EmployeeTable';
+import Footer from './component/Footer';
+import Header from './component/Header';
 
 function App() {
   return (
-    <div className="App">
-      Hello from client!
-    
+    <div>
+      <Header />
+      <EmployeeTable />
+      <Footer />
     </div>
   );
 }
