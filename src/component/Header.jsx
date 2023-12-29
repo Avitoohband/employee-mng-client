@@ -1,9 +1,9 @@
 const Header = () => {
   return (
-    <header className="">
-      <nav class="navbar bg-body-tertiary">
-        <div class="container-fluid">
-          <a class="navbar-brand">Navbar</a>
+    <header class="mb-2">
+      <nav class="navbar bg-secondary">
+        <div class="container-fluid">          
+          <a class="navbar-brand" href="/">Employee Dashboard</a>
           <form class="d-flex" role="search">
             <input
               class="form-control me-2"
@@ -11,7 +11,7 @@ const Header = () => {
               placeholder="Search"
               aria-label="Search"
             />
-            <button class="btn btn-outline-success" type="submit">
+            <button class="btn btn-warning" type="submit">
               Search
             </button>
           </form>
