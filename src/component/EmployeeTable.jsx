@@ -1,6 +1,8 @@
 import Table from "react-bootstrap/Table";
 import Button from "react-bootstrap/Button";
-import React from 'react'
+import React, { useEffect, useState } from "react";
+import EmployeeData from "./EmployeeData";
+import {getEmployees} from "../util/EmployeeUtil";
 
 const demoData = [
   {
@@ -30,35 +32,35 @@ const demoData = [
 ];
 
 const EmployeeTable = () => {
-  return (      
+  const [employees, setEmployess] = useState([]);
+
+  useEffect(() => {
+    const fetchEmployees = async () => {
+      const employeeData = await getEmployees();
+      if (employeeData) {
+        setEmployess(employeeData);
+      }
+    };
+    fetchEmployees();
+  }, []);
+
+  return (
     <div class="d-flex flex-column">
-    <Table responsive striped boardered hover variant="dark">
-      <thead>
-        <tr>
-          <th>Username</th>
-          <th>Name</th>
-          <th>Department</th>
-          <th>Position</th>
-         
-        </tr>
-      </thead>
+      <Table responsive striped hover variant="dark">
+        <thead>
+          <tr>
+            <th>Username</th>
+            <th>Name</th>
+            <th>Department</th>
+            <th>Position</th>
+          </tr>
+        </thead>
 
-        <tbody>{
-          demoData.map(demo => (
-            <tr key={demo.username}>
-              <td>{demo.username}</td>
-              <td>{demo.name}</td>
-              <td>{demo.department}</td>
-              <td>{demo.position}</td>
-              <td class="d-flex justify-content-evenly"><Button className="btn-warning">Remove</Button><Button className="btn-warning">Edit</Button></td>
-            </tr>
-          ))
-          }</tbody>
-    </Table>
-    <div class="d-flex justify-content-end">
-    <Button style={{width:'10%'}}>Add Employee</Button>
-
-    </div>
+        <tbody>{<EmployeeData data={employees} />}</tbody>
+      </Table>
+      <div class="d-flex justify-content-end">
+        <Button style={{ width: "10%" }}>Add</Button>
+      </div>
     </div>
   );
 };
