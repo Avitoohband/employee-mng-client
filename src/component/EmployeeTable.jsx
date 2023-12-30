@@ -2,7 +2,8 @@ import Table from "react-bootstrap/Table";
 import Button from "react-bootstrap/Button";
 import React, { useEffect, useState } from "react";
 import EmployeeData from "./EmployeeData";
-import {getEmployees} from "../util/EmployeeUtil";
+import { addEmployee, deleteEmployee, getEmployees } from "../util/EmployeeUtil";
+import EmployeeModalForm from './EmployeeModalForm'
 
 const demoData = [
   {
@@ -33,35 +34,62 @@ const demoData = [
 
 const EmployeeTable = () => {
   const [employees, setEmployess] = useState([]);
+  const [isEmployees, setIsEmployees] = useState(false);
 
   useEffect(() => {
     const fetchEmployees = async () => {
-      const employeeData = await getEmployees();
-      if (employeeData) {
-        setEmployess(employeeData);
-      }
+      await getEmployeeHelper();
     };
     fetchEmployees();
   }, []);
 
-  return (
-    <div class="d-flex flex-column">
-      <Table responsive striped hover variant="dark">
-        <thead>
-          <tr>
-            <th>Username</th>
-            <th>Name</th>
-            <th>Department</th>
-            <th>Position</th>
-          </tr>
-        </thead>
+  const getEmployeeHelper = async () => {
+    const employeeData = await getEmployees();
+    if (employeeData) {          
+      setEmployess(employeeData);
+      setIsEmployees(true);
+    }else{     
+      setIsEmployees(false);
+    }
+  };
 
-        <tbody>{<EmployeeData data={employees} />}</tbody>
-      </Table>
-      <div class="d-flex justify-content-end">
-        <Button style={{ width: "10%" }}>Add</Button>
+  const addEmployeeHelper = async (employeeData) =>{
+    const data = await addEmployee(employeeData);
+    await getEmployeeHelper();    
+  }
+
+  const removeHandler = async (employeeUserName) => {
+    await deleteEmployee(employeeUserName);    
+    await getEmployeeHelper();    
+  };
+
+  return (
+    <>
+      {!isEmployees ? (
+        <h2 className="text-center">No Employeses!</h2>
+      ) : (
+        <div className="d-flex flex-column">
+          <Table className="rounde " responsive striped hover variant="dark">
+            <thead>
+              <tr>
+                <th>Username</th>
+                <th>Name</th>
+                <th>Department</th>
+                <th>Position</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {<EmployeeData data={employees} remove={removeHandler} />}
+            </tbody>
+          </Table>
+        </div>
+      )}
+      <div className={`d-flex ${isEmployees ? 'justify-content-end': 'justify-content-center'}`} >
+        <EmployeeModalForm addEmployee={addEmployeeHelper} />
       </div>
-    </div>
+    </>
   );
 };
+
 export default EmployeeTable;
