@@ -1,71 +1,55 @@
 import Table from "react-bootstrap/Table";
-import Button from "react-bootstrap/Button";
 import React, { useEffect, useState } from "react";
 import EmployeeData from "./EmployeeData";
-import { addEmployee, deleteEmployee, getEmployees } from "../util/EmployeeUtil";
-import EmployeeModalForm from './EmployeeModalForm'
-
-const demoData = [
-  {
-    username: "testusername",
-    name: "testname",
-    department: "testdepartment",
-    position: "testposition",
-  },
-  {
-    username: "testusername1",
-    name: "testname1",
-    department: "testdepartment1",
-    position: "testposition1",
-  },
-  {
-    username: "testusername2",
-    name: "testname2",
-    department: "testdepartment2",
-    position: "testposition2",
-  },
-  {
-    username: "testusername3",
-    name: "testname3",
-    department: "testdepartment3",
-    position: "testposition3",
-  },
-];
+import {
+  addEmployee,
+  deleteEmployee,
+  getEmployees,
+} from "../util/EmployeeUtil";
+import EmployeeModalForm from "./EmployeeModalForm";
+import FlexContainer from "./FlexContainer";
 
 const EmployeeTable = () => {
   const [employees, setEmployess] = useState([]);
-  const [isEmployees, setIsEmployees] = useState(false);
+  const [hasEmployees, setHasEmployees] = useState(false);
 
   useEffect(() => {
     const fetchEmployees = async () => {
-      await getEmployeeHelper();
+      getEmployeeHelper();
     };
     fetchEmployees();
   }, []);
 
   const getEmployeeHelper = async () => {
-    const employeeData = await getEmployees();
-    if (employeeData) {          
-      setEmployess(employeeData);
-      setIsEmployees(true);
-    }else{     
-      setIsEmployees(false);
+    try {
+      const employeeData = await getEmployees();
+      if (employeeData) {
+        setEmployess(employeeData);
+        setHasEmployees(true);
+      } else {
+        setHasEmployees(false);
+      }
+    } catch (err) {
+      console.error("Failed to fetch employees: ", err.message);
     }
   };
 
-  const addEmployeeHelper = async (employeeData) =>{
-    const data = await addEmployee(employeeData);
-    await getEmployeeHelper();    
-  }
-
+  const addEmployeeHelper = async (employeeData) => {
+    try {
+      await addEmployee(employeeData);
+      await getEmployeeHelper();
+    } catch (err) {
+      console.error("Failed to add employee: ", err.message);
+    }
+  };
   const removeHandler = async (employeeUserName) => {
-    await deleteEmployee(employeeUserName);    
-    await getEmployeeHelper();    
+    await deleteEmployee(employeeUserName);
+    await getEmployeeHelper();
   };
 
   return (
-    <>
-      {!isEmployees ? (
+    <FlexContainer>
+      {!hasEmployees ? (
         <h2 className="text-center">No Employeses!</h2>
       ) : (
         <div className="d-flex flex-column">
@@ -80,15 +64,19 @@ const EmployeeTable = () => {
             </thead>
 
             <tbody>
-              {<EmployeeData data={employees} remove={removeHandler} />}
+              {<EmployeeData data={employees} remove={removeHandler} getEmployeeHandler={getEmployeeHelper} />}
             </tbody>
           </Table>
         </div>
       )}
-      <div className={`d-flex ${isEmployees ? 'justify-content-end': 'justify-content-center'}`} >
-        <EmployeeModalForm addEmployee={addEmployeeHelper} />
+      <div
+        className={`d-flex ${
+          hasEmployees ? "justify-content-end" : "justify-content-center"
+        }`}
+      >
+        <EmployeeModalForm hadnleEmployeeData={addEmployeeHelper} />
       </div>
-    </>
+    </FlexContainer>
   );
 };
 

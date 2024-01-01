@@ -1,8 +1,9 @@
 import React from 'react'
 
-const FlexContainer = ({children}) => {
+const FlexContainer = ({children, className}) => {  
+  
   return (
-    <div className='container'>{children}</div>
+    <div className={`container ${className}`}>{children}</div>
   )
 }
 

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
@@ -12,7 +12,6 @@ const defaultFormData = {
 
 function EmployeeModalForm(props) {
   const [show, setShow] = useState(false);
-  const [isEdit, setIsEdit] = useState(false);
 
   const [formData, setFormData] = useState(defaultFormData);
 
@@ -22,32 +21,41 @@ function EmployeeModalForm(props) {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const { edit, editEmployee, addEmployee } = props;
+  const { employeeData, isEdit, hadnleEmployeeData } = props;
 
-  const checkEdit = () => {
-    if (edit) {
-      setIsEdit(true);
+  useEffect(() => {
+    if (isEdit && employeeData) {
+      setFormData({
+        username: employeeData.username,
+        name: employeeData.name,
+        department: employeeData.department,
+        position: employeeData.position,
+      });
     }
-  };
+  }, [isEdit, employeeData]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    if(isEdit){
-      editEmployee(formData);
-    }else{
-      addEmployee(formData);
-    }   
 
-
-    setFormData(defaultFormData)
+    if (isEdit) {
+      setFormData({
+        ...formData,
+        username: employeeData.username,
+      });
+    }
+    hadnleEmployeeData(formData);
+    setFormData(defaultFormData);
+    handleClose();
   };
-
-  checkEdit();
 
   return (
     <>
-      <Button variant="primary" onClick={handleShow}>
-        Add
+      <Button
+        className={`${isEdit && "btn-warning"}`}
+        variant="primary"
+        onClick={handleShow}
+      >
+        {isEdit ? "Edit" : "Add"}
       </Button>
 
       <Modal show={show} onHide={handleClose}>
@@ -57,10 +65,11 @@ function EmployeeModalForm(props) {
         <Modal.Body>
           {" "}
           <Form onSubmit={handleSubmit}>
-            {!isEdit && (
+            {
               <Form.Group className="mb-3" controlId="formBasicUsername">
                 <Form.Label>Username</Form.Label>
                 <Form.Control
+                  disabled={isEdit}
                   name="username"
                   type="text"
                   placeholder="Enter Username"
@@ -68,7 +77,7 @@ function EmployeeModalForm(props) {
                   onChange={handleChange}
                 />
               </Form.Group>
-            )}
+            }
             <Form.Group className="mb-3" controlId="formBasicName">
               <Form.Label>Name</Form.Label>
               <Form.Control
