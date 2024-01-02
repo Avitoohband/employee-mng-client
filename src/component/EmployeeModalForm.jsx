@@ -5,6 +5,7 @@ import Form from "react-bootstrap/Form";
 
 const defaultFormData = {
   username: "",
+  password:"",
   name: "",
   department: "",
   position: "",
@@ -27,6 +28,7 @@ function EmployeeModalForm(props) {
     if (isEdit && employeeData) {
       setFormData({
         username: employeeData.username,
+        password:employeeData.password,
         name: employeeData.name,
         department: employeeData.department,
         position: employeeData.position,
@@ -74,6 +76,18 @@ function EmployeeModalForm(props) {
                   type="text"
                   placeholder="Enter Username"
                   value={formData.username}
+                  onChange={handleChange}
+                />
+              </Form.Group>
+            }
+            {
+              <Form.Group className="mb-3" controlId="formBasicPassword">
+                <Form.Label>Password</Form.Label>
+                <Form.Control                  
+                  name="password"
+                  type="password"
+                  placeholder="Enter Password"
+                  value={formData.password}
                   onChange={handleChange}
                 />
               </Form.Group>

@@ -7,10 +7,13 @@ const Header = () => {
   const userContext = useContext(UserContext);
 
 
-  useEffect(()=>{
-    if(useContext){
-      setUserName(userContext.username)
-    }  
+  useEffect(()=>{    
+    if(userContext.user){
+      const userObj =  JSON.parse(userContext.user);
+      setUserName(userObj.username)
+    }  else{
+      setUserName(null)
+    }
   }, [userContext])
 
   return (

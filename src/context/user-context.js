@@ -2,27 +2,33 @@ import { createContext, useState } from "react";
 
 const UserContext = createContext();
 
+export const UserProvider = ({ children }) => {
+  const [user, setUser] = useState(false);
 
-export const UserProvider = ({children}) =>{
-    const [user, setUser] = useState(true);
+  const updateUser = (userData) => {
+    userData = {
+      ...userData,
+      password: "",
+    };
+    const userDataString = JSON.stringify(userData);
+    setUser(userDataString);
+    localStorage.setItem("user", userDataString);
+  };
 
-    const updateUser =(userData) =>{
-        setUser(
-            prevUser => ({...user, userData})
-        )
-    }
+  const setUserOnly = (userString) => {
+    setUser(userString);
+  };
 
-    const logout = () =>{
-        setUser(null);
-    }
+  const logout = () => {
+    setUser(null);
+    localStorage.clear();
+  };
 
-    return <UserContext.Provider value={{user, updateUser, logout}}>
-        {children}
+  return (
+    <UserContext.Provider value={{ user, updateUser, setUserOnly, logout }}>
+      {children}
     </UserContext.Provider>
-
-}
+  );
+};
 
 export default UserContext;
-
-
-

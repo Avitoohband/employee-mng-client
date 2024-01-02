@@ -15,36 +15,60 @@ const EmployeeTable = () => {
 
   useEffect(() => {
     const fetchEmployees = async () => {
-      getEmployeeHelper();
+      getEmployeeHandler();
     };
     fetchEmployees();
   }, []);
 
-  const getEmployeeHelper = async () => {
+  const getEmployeeHandler = async () => {
     try {
       const employeeData = await getEmployees();
       if (employeeData) {
-        setEmployess(employeeData);
+        setEmployess([...employeeData]);
         setHasEmployees(true);
-      } else {
-        setHasEmployees(false);
       }
     } catch (err) {
       console.error("Failed to fetch employees: ", err.message);
     }
   };
 
-  const addEmployeeHelper = async (employeeData) => {
+  const addEmployeeHandler = async (employeeData) => {
     try {
-      await addEmployee(employeeData);
-      await getEmployeeHelper();
+      const emp = await addEmployee(employeeData);
+      if (emp) {
+        const updatedEmployees =
+          employees && employees.length > 0 ? [...employees, emp] : [emp];
+        setEmployess([...updatedEmployees]);
+        setHasEmployees(true);
+      }
     } catch (err) {
       console.error("Failed to add employee: ", err.message);
     }
   };
+
+  const editHandler = (employeeData) => {
+    if(employeeData){      
+    }
+  };
+
   const removeHandler = async (employeeUserName) => {
-    await deleteEmployee(employeeUserName);
-    await getEmployeeHelper();
+    try {
+      const emp = await deleteEmployee(employeeUserName);
+
+      if (emp) {
+        const updatedEmployees = employees.filter(
+          (e) => e.username !== emp.username
+        );
+
+        if (updatedEmployees && updatedEmployees.length > 0) {
+          setEmployess([...updatedEmployees]);
+        } else {
+          setHasEmployees(false);
+        }
+      }
+    } catch (err) {
+      console.error(err.message);
+    }
   };
 
   return (
@@ -64,7 +88,13 @@ const EmployeeTable = () => {
             </thead>
 
             <tbody>
-              {<EmployeeData data={employees} remove={removeHandler} getEmployeeHandler={getEmployeeHelper} />}
+              {
+                <EmployeeData
+                  data={employees}
+                  onRemove={removeHandler}
+                  onEdit={editHandler}
+                />
+              }
             </tbody>
           </Table>
         </div>
@@ -74,7 +104,7 @@ const EmployeeTable = () => {
           hasEmployees ? "justify-content-end" : "justify-content-center"
         }`}
       >
-        <EmployeeModalForm hadnleEmployeeData={addEmployeeHelper} />
+        <EmployeeModalForm hadnleEmployeeData={addEmployeeHandler} />
       </div>
     </FlexContainer>
   );
