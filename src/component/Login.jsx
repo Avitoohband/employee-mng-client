@@ -14,12 +14,11 @@ const Login = () => {
 
   const [formData, setFormData] = useState(initialFormData);
 
-  const handleSubmit = async (e) => {    
+  const handleSubmit = async (e) => {        
     e.preventDefault()
     try {
       const userData = await getEmployee(formData.username);
-      console.log(userData);
-      userContext.setUser(userData);
+      userContext.updateUser(userData);
     } catch (err) {
       console.error("Unable to login: ", err.message);
     }

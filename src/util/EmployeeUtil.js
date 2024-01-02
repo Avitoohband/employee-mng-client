@@ -1,11 +1,11 @@
 export const getEmployee = async (employeeUserName) => {  
   const url = `http://localhost:3001/api/employee/${employeeUserName}`;
   try {   
-    const response = await fetch(url, { method: "GET" });   
+    const response = await fetch(url, { method: "GET" }); 
     const data = await response.json();    
     return data;
   } catch (err) {    
-    console.error(err.message + '.');
+    console.log(err.message + '.');
   }
 };
 

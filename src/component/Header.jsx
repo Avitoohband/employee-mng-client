@@ -20,7 +20,7 @@ const Header = () => {
           <a className="navbar-brand" href="/">Employee Dashboard</a>
           <span className="d-flex gap-2" role="search">     
           <span className="navbar-brand">{userName}</span>     
-            <button className="btn btn-info">
+            <button onClick={userContext.logout} className="btn btn-info">
               Log Out
             </button>
           </span>
